@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace CodeTest.Accounting.Accounts
 {
@@ -21,6 +15,9 @@ namespace CodeTest.Accounting.Accounts
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    // note: we use launchSettings.json to set the URLs for the LOCAL environment
+                    // for deployed environments, the ASPNETCORE_URLS environment variable will specify the URLs
                 });
     }
 }

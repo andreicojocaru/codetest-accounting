@@ -15,6 +15,9 @@ namespace CodeTest.Accounting.BFF
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    // note: we use launchSettings.json to set the URLs for the LOCAL environment
+                    // for deployed environments, the ASPNETCORE_URLS environment variable will specify the URLs
                 });
     }
 }
