@@ -6,6 +6,6 @@ namespace CodeTest.Accounting.Customers.Database
     {
         Customer GetCustomer(int id);
 
-        void CreateCustomer(string name);
+        void CreateCustomer(Customer customer);
     }
 }

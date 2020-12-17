@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Contracts.Exceptions;
 using CodeTest.Accounting.Customers.Database;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,14 +23,15 @@ namespace CodeTest.Accounting.Customers.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public ActionResult Get(int id)
         {
-            var customer = _database.GetCustomer(id);
-
-            if (customer == null)
+            try
             {
-                return NoContent();
+                var customer = _database.GetCustomer(id);
+                return Ok(customer);
             }
-
-            return Ok(customer);
+            catch (CustomerNotFoundException e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost]
@@ -36,12 +39,26 @@ namespace CodeTest.Accounting.Customers.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult Post(Customer customer)
         {
+            // note: we could use ModelValidator from ASP, or custom validation library
+            // since the example is very small I prefer a manual check only
             if (string.IsNullOrWhiteSpace(customer?.FirstName))
             {
                 return BadRequest("Customer name is required.");
             }
 
-            _database.CreateCustomer(customer.FirstName);
+            if (string.IsNullOrWhiteSpace(customer.Surname))
+            {
+                return BadRequest("Customer surname is required");
+            }
+
+            try
+            {
+                _database.CreateCustomer(customer);
+            }
+            catch (CustomerAlreadyExistsException exception)
+            {
+                return BadRequest(exception);
+            }
 
             return Accepted();
         }
