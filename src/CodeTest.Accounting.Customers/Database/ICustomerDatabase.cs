@@ -1,4 +1,6 @@
-﻿namespace CodeTest.Accounting.Customers.Database
+﻿using CodeTest.Accounting.Contracts;
+
+namespace CodeTest.Accounting.Customers.Database
 {
     public interface ICustomerDatabase
     {

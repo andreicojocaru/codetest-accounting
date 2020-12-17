@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using CodeTest.Accounting.Contracts;
 using CodeTest.Accounting.Customers.Database;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,12 +36,12 @@ namespace CodeTest.Accounting.Customers.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult Post(Customer customer)
         {
-            if (string.IsNullOrWhiteSpace(customer?.Name))
+            if (string.IsNullOrWhiteSpace(customer?.FirstName))
             {
                 return BadRequest("Customer name is required.");
             }
 
-            _database.CreateCustomer(customer.Name);
+            _database.CreateCustomer(customer.FirstName);
 
             return Accepted();
         }
