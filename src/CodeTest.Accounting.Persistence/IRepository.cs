@@ -1,4 +1,6 @@
-﻿namespace CodeTest.Accounting.Persistence
+﻿using System.Collections.Generic;
+
+namespace CodeTest.Accounting.Persistence
 {
     /// <summary>
     /// Generic repository, useful for this example.
@@ -10,6 +12,8 @@
         // note: Int32 type Ids are picked just for easiness to work with
         // normally, we should be using GUIDs or more complex data types
         TEntity Get(int id);
+
+        IList<TEntity> ListAll();
 
         int Set(TEntity entity);
     }

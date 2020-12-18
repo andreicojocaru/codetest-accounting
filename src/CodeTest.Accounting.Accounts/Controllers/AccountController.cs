@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CodeTest.Accounting.Contracts;
@@ -36,6 +38,22 @@ namespace CodeTest.Accounting.Accounts.Controllers
             if (account != null)
             {
                 return Ok(account);
+            }
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("list-for-customer")]
+        [ProducesResponseType(typeof(IList<Account>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public ActionResult ListForCustomer(int customerId)
+        {
+            var accountsForCustomer = _accountRepository.ListAll().Where(a => a.CustomerId == customerId);
+
+            if (accountsForCustomer.Any())
+            {
+                return Ok(customerId);
             }
 
             return NoContent();
