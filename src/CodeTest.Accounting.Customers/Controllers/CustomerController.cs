@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using CodeTest.Accounting.Contracts;
 using CodeTest.Accounting.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace CodeTest.Accounting.Customers.Controllers
         public ActionResult Get(int id)
         {
             var customer = _customerRepository.Get(id);
+
             if (customer != null)
             {
                 return Ok(customer);
@@ -33,16 +35,20 @@ namespace CodeTest.Accounting.Customers.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Accepted)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post(Customer customer)
+        public ActionResult Post([Required] string firstName, [Required] string surname)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _customerRepository.Set(customer.Id, customer);
+            var id = _customerRepository.Set(new Customer
+            {
+                FirstName = firstName,
+                Surname = surname
+            });
 
-            return CreatedAtAction(nameof(Get), new { id = customer.Id });
+            return CreatedAtAction(nameof(Get), new { id });
         }
     }
 }

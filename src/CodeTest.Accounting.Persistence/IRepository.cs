@@ -11,6 +11,6 @@
         // normally, we should be using GUIDs or more complex data types
         TEntity Get(int id);
 
-        void Set(int id, TEntity entity);
+        int Set(TEntity entity);
     }
 }

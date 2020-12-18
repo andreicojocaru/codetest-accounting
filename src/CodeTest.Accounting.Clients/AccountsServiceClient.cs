@@ -24,5 +24,24 @@ namespace CodeTest.Accounting.ServiceClients
             _clientFactory = clientFactory;
         }
 
+        public async Task<Account> CreateAccountAsync(int accountId, int customerId, decimal balance)
+        {
+            throw new NotImplementedException();
+            //var uri = new Uri($"{_serviceUrlOptions.Value.Accounts}/api/account");
+
+            //try
+            //{
+            //    using var client = _clientFactory.CreateClient();
+            //    var response = await client.GetStreamAsync(uri);
+            //    var customer = await JsonSerializer.DeserializeAsync<CustomerDto>(response);
+
+            //    return customer;
+            //}
+            //catch (Exception e)
+            //{
+            //    _logger.LogError(e, "Error from Customer Service.");
+            //    return null;
+            //}
+        }
     }
 }
