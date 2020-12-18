@@ -1,4 +1,4 @@
-﻿namespace CodeTest.Accounting.Contracts
+﻿namespace CodeTest.Accounting.Domain
 {
     public class Customer : IEntity
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using CodeTest.Accounting.Contracts;
 using CodeTest.Accounting.Persistence;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Account = CodeTest.Accounting.Contracts.Account;
+using Account = CodeTest.Accounting.Domain.Account;
 
 namespace CodeTest.Accounting.Accounts
 {

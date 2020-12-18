@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CodeTest.Accounting.Persistence;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Mvc;
-using Account = CodeTest.Accounting.Contracts.Account;
+using Account = CodeTest.Accounting.Domain.Account;
 
 namespace CodeTest.Accounting.Accounts.Controllers
 {

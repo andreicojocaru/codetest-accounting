@@ -1,4 +1,4 @@
-﻿namespace CodeTest.Accounting.Contracts
+﻿namespace CodeTest.Accounting.Domain
 {
     public interface IEntity
     {

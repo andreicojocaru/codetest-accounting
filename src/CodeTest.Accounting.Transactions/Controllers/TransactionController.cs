@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Domain;
 using CodeTest.Accounting.Persistence;
 using Microsoft.AspNetCore.Mvc;
 

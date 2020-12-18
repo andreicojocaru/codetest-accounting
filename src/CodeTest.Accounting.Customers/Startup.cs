@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Customer = CodeTest.Accounting.Contracts.Customer;
+using Customer = CodeTest.Accounting.Domain.Customer;
 
 namespace CodeTest.Accounting.Customers
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Domain;
 
 namespace CodeTest.Accounting.Persistence
 {

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest.Accounting.Transac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1769A828-5793-4E82-9705-3DCAC4AAF27A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest.Accounting.Contracts", "CodeTest.Accounting.Contracts\CodeTest.Accounting.Contracts.csproj", "{961F5506-BBA8-43CB-993F-8AF8D4B61F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest.Accounting.Domain", "CodeTest.Accounting.Contracts\CodeTest.Accounting.Domain.csproj", "{961F5506-BBA8-43CB-993F-8AF8D4B61F87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeTest.Accounting.Persistence", "CodeTest.Accounting.Persistence\CodeTest.Accounting.Persistence.csproj", "{BD3287BE-C657-41C1-AD41-AC0D3D3CD366}"
 EndProject

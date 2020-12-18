@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using CodeTest.Accounting.Contracts;
 using CodeTest.Accounting.Customers.Models;
+using CodeTest.Accounting.Domain;
 using CodeTest.Accounting.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
