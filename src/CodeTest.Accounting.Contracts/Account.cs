@@ -2,15 +2,14 @@
 
 namespace CodeTest.Accounting.Contracts
 {
-    public class Customer
+    public class Account
     {
         [Required]
         public int Id { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
+        public int CustomerId { get; set; }
 
-        [Required]
-        public string Surname { get; set; }
+        public decimal Balance { get; set; }
     }
 }

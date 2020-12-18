@@ -1,21 +1,19 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using CodeTest.Accounting.Contracts;
-using CodeTest.Accounting.Contracts.Exceptions;
-using CodeTest.Accounting.Customers.Database;
+using CodeTest.Accounting.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeTest.Accounting.Customers.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustomerDatabase _database;
+        private readonly IRepository<Customer> _customerRepository;
 
-        public CustomerController(ICustomerDatabase database)
+        public CustomerController(IRepository<Customer> customerRepository)
         {
-            _database = database;
+            _customerRepository = customerRepository;
         }
 
         [HttpGet("{id}")]
@@ -23,15 +21,13 @@ namespace CodeTest.Accounting.Customers.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public ActionResult Get(int id)
         {
-            try
+            var customer = _customerRepository.Get(id);
+            if (customer != null)
             {
-                var customer = _database.GetCustomer(id);
                 return Ok(customer);
             }
-            catch (CustomerNotFoundException e)
-            {
-                return BadRequest(e);
-            }
+
+            return BadRequest($"Customer not found for id: {id}");
         }
 
         [HttpPost]
@@ -39,28 +35,14 @@ namespace CodeTest.Accounting.Customers.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult Post(Customer customer)
         {
-            // note: we could use ModelValidator from ASP, or custom validation library
-            // since the example is very small I prefer a manual check only
-            if (string.IsNullOrWhiteSpace(customer?.FirstName))
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Customer name is required.");
+                return BadRequest(ModelState);
             }
 
-            if (string.IsNullOrWhiteSpace(customer.Surname))
-            {
-                return BadRequest("Customer surname is required");
-            }
+            _customerRepository.Set(customer.Id, customer);
 
-            try
-            {
-                _database.CreateCustomer(customer);
-            }
-            catch (CustomerAlreadyExistsException exception)
-            {
-                return BadRequest(exception);
-            }
-
-            return Accepted();
+            return CreatedAtAction(nameof(Get), new { id = customer.Id });
         }
     }
 }

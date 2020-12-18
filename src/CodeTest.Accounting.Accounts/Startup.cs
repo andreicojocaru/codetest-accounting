@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Persistence;
+using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace CodeTest.Accounting.Accounts
 {
@@ -25,6 +21,12 @@ namespace CodeTest.Accounting.Accounts
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IRepository<Account>, InMemoryRepository<Account>>();
+
+            services.Configure<ServiceUrls>(Configuration.GetSection("ServiceUrls"));
+            services.AddSingleton<CustomersServiceClient>();
+            services.AddSingleton<TransactionsServiceClient>();
+
             services.AddControllers();
         }
 
