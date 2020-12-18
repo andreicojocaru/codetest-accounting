@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using CodeTest.Accounting.Contracts;
 using CodeTest.Accounting.Persistence;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Mvc;
+using Account = CodeTest.Accounting.Contracts.Account;
 
 namespace CodeTest.Accounting.Accounts.Controllers
 {
@@ -70,7 +70,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
             }
 
             // first, check for Consumer account using the Consumer Service
-            var customer = await _customersServiceClient.GetCustomerAsync(customerId);
+            var customer = await _customersServiceClient.GetAsync(customerId);
 
             if (customer == null)
             {
@@ -86,7 +86,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
             // if the account balance is positive, create a new transaction
             if (initialCredit.HasValue && initialCredit.Value > 0)
             {
-                await _transactionsServiceClient.CreateNewTransaction(id, initialCredit.Value);
+                await _transactionsServiceClient.PostAsync(id, initialCredit.Value);
             }
 
             return CreatedAtAction(nameof(Get), new { id });

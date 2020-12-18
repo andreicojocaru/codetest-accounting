@@ -18,7 +18,7 @@
     },
     "CodeTest.Accounting.Customers": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:50004;http://localhost:50005",
+      "applicationUrl": "http://localhost:50004;https://localhost:50005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

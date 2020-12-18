@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CodeTest.Accounting.Clients\CodeTest.Accounting.ServiceClients.csproj" />
     <ProjectReference Include="..\CodeTest.Accounting.Contracts\CodeTest.Accounting.Contracts.csproj" />
     <ProjectReference Include="..\CodeTest.Accounting.Persistence\CodeTest.Accounting.Persistence.csproj" />
