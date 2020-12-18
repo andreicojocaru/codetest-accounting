@@ -30,7 +30,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult Get(int id)
         {
             var account = _accountRepository.Get(id);
@@ -40,7 +40,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
                 return Ok(account);
             }
 
-            return NoContent();
+            return BadRequest($"Account not found for id: {id}");
         }
 
         [HttpGet]
@@ -49,11 +49,11 @@ namespace CodeTest.Accounting.Accounts.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public ActionResult ListForCustomer(int customerId)
         {
-            var accountsForCustomer = _accountRepository.ListAll().Where(a => a.CustomerId == customerId);
+            var accounts = _accountRepository.ListAll().Where(a => a.CustomerId == customerId);
 
-            if (accountsForCustomer.Any())
+            if (accounts.Any())
             {
-                return Ok(customerId);
+                return Ok(accounts);
             }
 
             return NoContent();

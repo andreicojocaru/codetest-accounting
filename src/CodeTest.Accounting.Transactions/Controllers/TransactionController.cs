@@ -1,0 +1,74 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Persistence;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CodeTest.Accounting.Transactions.Controllers
+{
+    [ApiController]
+    [Route("api/transaction")]
+    public class TransactionController : ControllerBase
+    {
+        private readonly IRepository<Transaction> _transactionsRepository;
+
+        public TransactionController(IRepository<Transaction> transactionsRepository)
+        {
+            _transactionsRepository = transactionsRepository;
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public ActionResult Get(int id)
+        {
+            var transaction = _transactionsRepository.Get(id);
+
+            if (transaction != null)
+            {
+                return Ok(transaction);
+            }
+
+            return BadRequest($"Transaction not found for id: {id}");
+        }
+
+        [HttpGet]
+        [Route("list-for-account")]
+        [ProducesResponseType(typeof(IList<Transaction>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        public ActionResult ListForCustomer(int accountId)
+        {
+            var transactions = _transactionsRepository.ListAll().Where(a => a.AccountId == accountId);
+
+            if (transactions.Any())
+            {
+                return Ok(transactions);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public ActionResult Post([Required] int accountId, [Required] decimal amount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _transactionsRepository.Set(new Transaction
+            {
+                AccountId = accountId,
+                Amount = amount
+            });
+
+            // todo: should we update the Account Balance for the new Transaction?
+
+            return CreatedAtAction(nameof(Get), new { id });
+        }
+    }
+}

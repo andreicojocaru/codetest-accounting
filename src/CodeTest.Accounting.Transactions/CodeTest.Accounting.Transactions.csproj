@@ -4,5 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CodeTest.Accounting.Contracts\CodeTest.Accounting.Contracts.csproj" />
+    <ProjectReference Include="..\CodeTest.Accounting.Persistence\CodeTest.Accounting.Persistence.csproj" />
+  </ItemGroup>
+
 
 </Project>

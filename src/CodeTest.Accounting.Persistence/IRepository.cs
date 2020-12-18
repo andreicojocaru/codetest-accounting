@@ -9,7 +9,7 @@ namespace CodeTest.Accounting.Persistence
     /// <typeparam name="TEntity">The Entity type to store or retrieve from the Repository.</typeparam>
     public interface IRepository<TEntity>
     {
-        // note: Int32 type Ids are picked just for easiness to work with
+        // note: Int32 type Ids are picked just for easiness to work with while testing
         // normally, we should be using GUIDs or more complex data types
         TEntity Get(int id);
 

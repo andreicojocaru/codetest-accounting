@@ -33,7 +33,7 @@ namespace CodeTest.Accounting.Customers.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Accepted)]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public ActionResult Post([Required] string firstName, [Required] string surname)
         {
