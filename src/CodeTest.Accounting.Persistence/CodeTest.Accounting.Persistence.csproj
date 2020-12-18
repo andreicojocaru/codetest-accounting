@@ -8,4 +8,8 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CodeTest.Accounting.Contracts\CodeTest.Accounting.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

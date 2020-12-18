@@ -1,6 +1,6 @@
 ﻿namespace CodeTest.Accounting.Contracts
 {
-    public class Account
+    public class Account : IEntity
     {
         public int Id { get; set; }
 

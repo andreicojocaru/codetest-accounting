@@ -1,13 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
+﻿using System.Net;
 using CodeTest.Accounting.Contracts;
+using CodeTest.Accounting.Customers.Models;
 using CodeTest.Accounting.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeTest.Accounting.Customers.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/customer")]
     public class CustomerController : ControllerBase
     {
         private readonly IRepository<Customer> _customerRepository;
@@ -29,13 +29,13 @@ namespace CodeTest.Accounting.Customers.Controllers
                 return Ok(customer);
             }
 
-            return BadRequest($"Customer not found for id: {id}");
+            return NoContent();
         }
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post([Required] string firstName, [Required] string surname)
+        public ActionResult Post(CustomerDto customer)
         {
             if (!ModelState.IsValid)
             {
@@ -44,11 +44,11 @@ namespace CodeTest.Accounting.Customers.Controllers
 
             var id = _customerRepository.Set(new Customer
             {
-                FirstName = firstName,
-                Surname = surname
+                FirstName = customer.FirstName,
+                Surname = customer.Surname
             });
 
-            return CreatedAtAction(nameof(Get), new { id });
+            return CreatedAtAction(nameof(Get), new { id }, id);
         }
     }
 }

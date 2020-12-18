@@ -3,6 +3,8 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "launchBrowser": true,
+    "launchUrl": "/swagger",
     "iisExpress": {
       "applicationUrl": "http://localhost:50004",
       "sslPort": 50005
@@ -11,6 +13,8 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://localhost:50004;https://localhost:50005"
@@ -19,6 +23,8 @@
     "CodeTest.Accounting.Customers": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:50004;https://localhost:50005",
+      "launchBrowser": true,
+      "launchUrl": "/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
