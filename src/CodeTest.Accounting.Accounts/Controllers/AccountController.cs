@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using CodeTest.Accounting.Persistence;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Mvc;
 using Account = CodeTest.Accounting.Domain.Account;
+using AccountDto = CodeTest.Accounting.Accounts.Models.AccountDto;
 
 namespace CodeTest.Accounting.Accounts.Controllers
 {
@@ -62,7 +62,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> Post([Required] int customerId, decimal? initialCredit)
+        public async Task<ActionResult> Post([FromBody] AccountDto account)
         {
             if (!ModelState.IsValid)
             {
@@ -70,26 +70,26 @@ namespace CodeTest.Accounting.Accounts.Controllers
             }
 
             // first, check for Consumer account using the Consumer Service
-            var customer = await _customersServiceClient.GetAsync(customerId);
+            var customer = await _customersServiceClient.GetAsync(account.CustomerId);
 
             if (customer == null)
             {
-                return BadRequest($"Customer {customerId} not found!");
+                return BadRequest($"Customer {account.CustomerId} not found!");
             }
 
             var id = _accountRepository.Set(new Account
             {
-                Balance = initialCredit ?? 0,
-                CustomerId = customerId
+                Balance = account.InitialCredit ?? 0,
+                CustomerId = account.CustomerId
             });
 
             // if the account balance is positive, create a new transaction
-            if (initialCredit.HasValue && initialCredit.Value > 0)
+            if (account.InitialCredit.HasValue && account.InitialCredit.Value > 0)
             {
-                await _transactionsServiceClient.PostAsync(id, initialCredit.Value);
+                await _transactionsServiceClient.PostAsync(id, account.InitialCredit.Value);
             }
 
-            return CreatedAtAction(nameof(Get), new { id });
+            return CreatedAtAction(nameof(Get), new { id }, id);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CodeTest.Accounting.ServiceClients
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.9.4.0 (NJsonSchema v10.3.1.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class CustomersServiceClient
     {
-        private string _baseUrl = "https://localhost:50005";
+        private string _baseUrl = "http://localhost:50004";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -48,21 +48,21 @@ namespace CodeTest.Accounting.ServiceClients
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="CustomerApiException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Customer> GetAsync(int id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
+        /// <exception cref="CustomerApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Customer> GetAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Customer/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/customer/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -98,7 +98,7 @@ namespace CodeTest.Accounting.ServiceClients
                             var objectResponse_ = await ReadObjectResponseAsync<Customer>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CustomerApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -106,12 +106,12 @@ namespace CodeTest.Accounting.ServiceClients
                         if (status_ == 204)
                         {
                             string responseText_ = (response_.Content == null) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", status_, responseText_, headers_, null);
+                            throw new CustomerApiException("A server side error occurred.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CustomerApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -128,27 +128,21 @@ namespace CodeTest.Accounting.ServiceClients
             }
         }
 
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task PostAsync(string firstName, string surname)
+        /// <exception cref="CustomerApiException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task PostAsync(CustomerDto customer)
         {
-            return PostAsync(firstName, surname, System.Threading.CancellationToken.None);
+            return PostAsync(customer, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task PostAsync(string firstName, string surname, System.Threading.CancellationToken cancellationToken)
+        /// <exception cref="CustomerApiException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task PostAsync(CustomerDto customer, System.Threading.CancellationToken cancellationToken)
         {
+            if (customer == null)
+                throw new System.ArgumentNullException("customer");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Customer?");
-            if (firstName != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("firstName") + "=").Append(System.Uri.EscapeDataString(ConvertToString(firstName, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (surname != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("surname") + "=").Append(System.Uri.EscapeDataString(ConvertToString(surname, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/customer");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -156,7 +150,9 @@ namespace CodeTest.Accounting.ServiceClients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(customer, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -185,17 +181,17 @@ namespace CodeTest.Accounting.ServiceClients
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CustomerProblemDetails>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CustomerApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new CustomerApiException<CustomerProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CustomerApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -245,7 +241,7 @@ namespace CodeTest.Accounting.ServiceClients
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new CustomerApiException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -264,7 +260,7 @@ namespace CodeTest.Accounting.ServiceClients
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new CustomerApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }
@@ -331,7 +327,7 @@ namespace CodeTest.Accounting.ServiceClients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class ProblemDetails
+    public partial class CustomerProblemDetails
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
@@ -363,8 +359,22 @@ namespace CodeTest.Accounting.ServiceClients
 
     }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.1.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class CustomerDto
+    {
+        [Newtonsoft.Json.JsonProperty("firstName", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string FirstName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("surname", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Surname { get; set; }
+
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.9.4.0 (NJsonSchema v10.3.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class ApiException : System.Exception
+    public partial class CustomerApiException : System.Exception
     {
         public int StatusCode { get; private set; }
 
@@ -372,7 +382,7 @@ namespace CodeTest.Accounting.ServiceClients
 
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+        public CustomerApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
             : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
         {
             StatusCode = statusCode;
@@ -387,11 +397,11 @@ namespace CodeTest.Accounting.ServiceClients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.9.4.0 (NJsonSchema v10.3.1.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class ApiException<TResult> : ApiException
+    public partial class CustomerApiException<TResult> : CustomerApiException
     {
         public TResult Result { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+        public CustomerApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;
