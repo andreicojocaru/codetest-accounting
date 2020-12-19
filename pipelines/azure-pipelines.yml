@@ -6,6 +6,9 @@
 trigger:
 - main
 
+# no need to trigger builds on PRs yet
+pr: none
+
 pool:
   vmImage: 'ubuntu-latest'
 
