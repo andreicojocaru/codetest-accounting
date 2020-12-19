@@ -142,3 +142,31 @@ If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `C
 
 ## Deployment
 
+The application builds and deployments are made using Azure DevOps.
+
+The pipeline file can be found under (`./pipelines/azure-pipelines.yml`)[https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml].
+
+### Builds
+
+The pipeline contains a simple `dotnet publish` for each service. This command runs `restore, build and publish` under the hood. The build artifacts are then published as pipeline artifacts, to be downloaded and deployed later on in the deployment stage.
+
+### Deployments
+
+Under the path (`./pipelines/terraform`)[https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform] there are Terraform definitions for Infrastructure as Code.
+
+These definitions create `Web App Plans` and `Web App Services` in `Azure`. The pipeline can deploy and rehydrate the infrastructure on every service deployment.
+
+> Note: I didn't include the actual running as part of my deployments since there will be costs involved with (at least) keeping a remote state of Terraform in a `Storage Account`. The deployment can easily be ran as part of the environment deployment by changing the input variables.
+
+The resulting infrastructure will look like this:
+
+![Terraform IaC](./docs/azure_deployment.png)
+
+> Note: because of the size of the project, all services and infrastructure is defined in the same repository and pipeline. In a true Enterprise environment, we would split each service and it's own infrastructure definition in separate repositories. Then, each repository will have isolated pipelines that build, provision and deploy only one service.
+
+
+### Azure Pipeline 
+
+The Azure DevOps project is publicly available here: https://dev.azure.com/acojocaru/codetest-accounting/_build.
+
+Latest build status: [![Build Status](https://dev.azure.com/acojocaru/codetest-accounting/_apis/build/status/andreicojocaru.codetest-accounting?branchName=main)](https://dev.azure.com/acojocaru/codetest-accounting/_build/latest?definitionId=12&branchName=main)

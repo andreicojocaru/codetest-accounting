@@ -14,40 +14,98 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  
+stages:
+- stage: Build
+  jobs:
+    - job: BuildAndPublish
+      steps:
+      # this can be a template, kept it like this for clarity
+      # somehow, the WorkingDirectory is not correctly picked up by the DotNetCoreCLI@2 task, we use plain shell instead :(
+      - task: CmdLine@2
+        displayName: "Publish service: Accounts"
+        inputs:
+          script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
+          workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
+          failOnStderr: true
 
-steps:
-# this can be a template, kept it like this for clarity
-# somehow, the WorkingDirectory is not correctly picked up by the DotNetCoreCLI@2 task, we use plain shell instead :(
-- task: CmdLine@2
-  displayName: "Publish service: Accounts"
-  inputs:
-    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
-    failOnStderr: true
+      - task: CmdLine@2
+        displayName: "Publish service: Customers"
+        inputs:
+          script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Customers'
+          workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Customers'
+          failOnStderr: true
 
-- task: CmdLine@2
-  displayName: "Publish service: Customers"
-  inputs:
-    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Customers'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Customers'
-    failOnStderr: true
+      - task: CmdLine@2
+        displayName: "Publish service: Transactions"
+        inputs:
+          script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
+          workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
+          failOnStderr: true
 
-- task: CmdLine@2
-  displayName: "Publish service: Transactions"
-  inputs:
-    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
-    failOnStderr: true
+      - task: CmdLine@2
+        displayName: "Publish service: BFF"
+        inputs:
+          script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
+          workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
+          failOnStderr: true
 
-- task: CmdLine@2
-  displayName: "Publish service: BFF"
-  inputs:
-    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
-    failOnStderr: true
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'services'
+          publishLocation: 'Container'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'services'
-    publishLocation: 'Container'
+# note: this pipeline deploys all the services
+# normally, each service would have it's own pipeline
+- stage: DeployAzure
+  displayName: "Deploy services to Azure"
+  dependsOn: Build
+  jobs:
+    # here we would have the TERRAFORM deployment, and the output variables would be used for input of the App Service Name
+    # - job: DeployTerraform 
+    - deployment: DeployServices
+      environment: CodeTest
+      strategy:
+       runOnce:
+         deploy:
+           steps:
+            - task: AzureRmWebAppDeployment@4
+              displayName: "Deploy service: Accounts"
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
+                appType: 'webAppLinux'
+                WebAppName: 'codetest-accounting-accounts' # this can be provided by Terraform
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Accounts'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: "Deploy service: Customers"
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
+                appType: 'webAppLinux'
+                WebAppName: 'codetest-accounting-customers' # this can be provided by Terraform
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Customers'
+            
+            - task: AzureRmWebAppDeployment@4
+              displayName: "Deploy service: Transactions"
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
+                appType: 'webAppLinux'
+                WebAppName: 'codetest-accounting-transactions' # this can be provided by Terraform
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Transactions'
+            
+            - task: AzureRmWebAppDeployment@4
+              displayName: "Deploy service: BFF"
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
+                appType: 'webAppLinux'
+                WebAppName: 'codetest-accounting-bff'
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.BFF'
+                AppSettings: |
+                  -ServiceUrls__Accounts "https://codetest-accounting-accounts.azurewebsites.net" 
+                  -ServiceUrls__Customers "https://codetest-accounting-customers.azurewebsites.net" 
+                  -ServiceUrls__Transactions "https://codetest-accounting-transactions.azurewebsites.net"
