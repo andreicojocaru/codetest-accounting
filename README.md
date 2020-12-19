@@ -22,6 +22,8 @@ transactions of the accounts.
 
 In this approach each service can (virtually) talk to any other service. This can have a few benenfits, and tradeoffs outlined below.
 
+ ![Variant 1](./docs/diagram_variant_1.png)
+
 #### Pros
 - each of the service's operations is self-contained (makes sure to keep the internal state correct)
 - inspecting any operation makes it easy to understand what pieces are required to make the operation happen
@@ -36,6 +38,8 @@ In this approach each service can (virtually) talk to any other service. This ca
 
 In this approach each service can only update it's internal state and notify other services of state updates via Events. The business logic orchestration happens in a gateway service (e.g. Backend for Frontend).
 
+ ![Variant 2](./docs/diagram_variant_2.png)
+
 #### Pros
 - each service's responsability is to keep it's internal state correct
 - on an internal update of state, the service can choose to notify other Services (broadcast using a Message Bus, or Pub/Sub)
@@ -48,12 +52,13 @@ In this approach each service can only update it's internal state and notify oth
 - updating any of the Orchestrator's client services Contracts means multiple reasons for the Orchestrator service to change - some might see it as an anti-pattern
 - logical services have to trust the chain of requests for validation. Business logic validation inside the service becomes difficult since the business requirements are usually outside the service (in the Orchestrator)
 
-
 ### Variant 3 - Backend for Frontend + Domain Driven Designed Services
 
 This approach is a mix of the previous 2 approaches with one big difference: there is no central orchestrator. Instead, we model Services based on the business Domain (following Domain Driven Design).
 
 Each of the services would have a concrete Business role, and keep it's state in an Aggregate Root. This Aggregate Root would have to validate and update the internal state, always keeping it valid and up to date.
+
+ ![Variant 3](./docs/diagram_variant_3.png)
 
 #### Pros
 - Aggregate Roots help with keeping consistent state at all times
