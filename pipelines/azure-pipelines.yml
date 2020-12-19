@@ -14,7 +14,8 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: "Publish"
+  displayName: "Publish service: Accounts"
   inputs:
     command: 'publish'
     publishWebProjects: true
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
