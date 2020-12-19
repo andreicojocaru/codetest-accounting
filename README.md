@@ -91,6 +91,13 @@ For the sake of simplicity and code reusability, we have a generic `IRepository<
 
 > Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
 
+### Service Clients
+
+To showcase service connections between the BFF and the Logical serivces, I chose to generate the C# client classes based off the OpenAPI specification.
+
+Each Logical service exposes a Swagger definition, which I imported into NSwag to generate the client classes.
+
+Multiple approaches are valid, and these clients can be generated either dynamically at build time, or statically using the desktop NSwag Studio. I prefer the latter since the project is small and the client code can easily be inspected.
 
 ### (Local) Testing
 
