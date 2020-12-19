@@ -19,28 +19,32 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'  
 
 - task: DotNetCoreCLI@2
   displayName: "Publish service: Consumers"
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers'
 
 - task: DotNetCoreCLI@2
   displayName: "Publish service: Transactions"
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
 
 - task: DotNetCoreCLI@2
   displayName: "Publish service: BFF"
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
 
 - task: PublishBuildArtifacts@1
   inputs:
