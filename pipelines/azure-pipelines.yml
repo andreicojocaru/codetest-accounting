@@ -19,7 +19,7 @@ steps:
   displayName: "Publish service: Accounts"
   inputs:
     script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts --output $(Build.ArtifactStagingDirectory)'
     failOnStderr: true
 
 - task: CmdLine@2
