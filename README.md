@@ -91,6 +91,13 @@ For the sake of simplicity and code reusability, we have a generic `IRepository<
 
 > Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
 
+### Service Clients
+
+To showcase service connections between the BFF and the Logical serivces, I chose to generate the C# client classes based off the OpenAPI specification.
+
+Each Logical service exposes a Swagger definition, which I imported into NSwag to generate the client classes.
+
+Multiple approaches are valid, and these clients can be generated either dynamically at build time, or statically using the desktop NSwag Studio. I prefer the latter since the project is small and the client code can easily be inspected.
 
 ### (Local) Testing
 
@@ -105,6 +112,8 @@ In order to successfuly test the creation of an account we need two steps:
     "surname": "C"
    }
 
+![Create Customer](./docs/postman_1_create_customer.png)
+
  - using the `BFF`, open an account. This will orchestrate the validation and account creation across all services
 
 > POST https://localhost:50001/api/account/open-account
@@ -116,6 +125,15 @@ In order to successfuly test the creation of an account we need two steps:
   }
 
 If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `Customer not valid!` message.
+
+![Open Account](./docs/postman_2_open_account.png)
+
+ - using the `BFF`, query for User Information. This will orchestrate requests to all services, and consolidate returned data.
+
+ > GET https://localhost:50001/api/information/user/1
+
+ ![User Information](./docs/postman_3_user_information.png)
+
 
 ## Deployment
 

@@ -129,22 +129,20 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForCustomerAsync(int? accountId)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds)
         {
-            return ListForCustomerAsync(accountId, System.Threading.CancellationToken.None);
+            return ListForAccountsAsync(accountIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForCustomerAsync(int? accountId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds, System.Threading.CancellationToken cancellationToken)
         {
+            if (accountIds == null)
+                throw new System.ArgumentNullException("accountIds");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/transaction/list-for-account?");
-            if (accountId != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("accountId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/transaction/list-for-accounts");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -152,6 +150,9 @@ namespace CodeTest.Accounting.ServiceClients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(accountIds, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("GET");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
