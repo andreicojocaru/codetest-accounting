@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using CodeTest.Accounting.Domain;
 using CodeTest.Accounting.Persistence;
+using CodeTest.Accounting.Transactions.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeTest.Accounting.Transactions.Controllers
@@ -53,7 +53,7 @@ namespace CodeTest.Accounting.Transactions.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post([Required] int accountId, [Required] decimal amount)
+        public ActionResult Post([FromBody] TransactionDto input)
         {
             if (!ModelState.IsValid)
             {
@@ -62,11 +62,11 @@ namespace CodeTest.Accounting.Transactions.Controllers
 
             var id = _transactionsRepository.Set(new Transaction
             {
-                AccountId = accountId,
-                Amount = amount
+                AccountId = input.AccountId,
+                Amount = input.Amount
             });
 
-            // todo: should we update the Account Balance for the new Transaction?
+            // todo (out-of-scope): we should notify the Accounts Service to update Account Balance for the new Transaction
 
             return CreatedAtAction(nameof(Get), new { id });
         }

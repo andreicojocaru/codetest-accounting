@@ -1,7 +1,6 @@
 using System;
 using System.Net.Http;
 using CodeTest.Accounting.Persistence;
-using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,31 +24,6 @@ namespace CodeTest.Accounting.Accounts
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IRepository<Account>, InMemoryRepository<Account>>();
-
-            services.Configure<ServiceUrls>(Configuration.GetSection("ServiceUrls"));
-
-            services.AddSingleton<CustomersServiceClient>((provider =>
-            {
-                var httpFactory = provider.GetService<IHttpClientFactory>();
-                var urls = provider.GetService<IOptions<ServiceUrls>>();
-
-                var client = httpFactory.CreateClient();
-                client.BaseAddress = new Uri(urls?.Value.Customers ?? throw new ArgumentException("Missing Consumer Service URL setting."));
-
-                return new CustomersServiceClient(client);
-            }));
-
-
-            services.AddSingleton<TransactionsServiceClient>((provider =>
-            {
-                var httpFactory = provider.GetService<IHttpClientFactory>();
-                var urls = provider.GetService<IOptions<ServiceUrls>>();
-
-                var client = httpFactory.CreateClient();
-                client.BaseAddress = new Uri(urls?.Value.Transactions ?? throw new ArgumentException("Missing Transactions Service URL setting."));
-
-                return new TransactionsServiceClient(client);
-            }));
 
             services.AddControllers();
             services.AddSwaggerDocument();

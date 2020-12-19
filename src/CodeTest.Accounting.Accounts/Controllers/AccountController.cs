@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CodeTest.Accounting.Persistence;
-using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Mvc;
 using Account = CodeTest.Accounting.Domain.Account;
 using AccountDto = CodeTest.Accounting.Accounts.Models.AccountDto;
@@ -15,16 +14,9 @@ namespace CodeTest.Accounting.Accounts.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IRepository<Account> _accountRepository;
-        private readonly CustomersServiceClient _customersServiceClient;
-        private readonly TransactionsServiceClient _transactionsServiceClient;
 
-        public AccountController(
-            IRepository<Account> accountRepository,
-            CustomersServiceClient customersServiceClient,
-            TransactionsServiceClient transactionsServiceClient)
+        public AccountController(IRepository<Account> accountRepository)
         {
-            _customersServiceClient = customersServiceClient;
-            _transactionsServiceClient = transactionsServiceClient;
             _accountRepository = accountRepository;
         }
 
@@ -60,36 +52,27 @@ namespace CodeTest.Accounting.Accounts.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> Post([FromBody] AccountDto account)
+        public async Task<ActionResult<Account>> Post([FromBody] AccountDto account)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // first, check for Consumer account using the Consumer Service
-            var customer = await _customersServiceClient.GetAsync(account.CustomerId);
-
-            if (customer == null)
-            {
-                return BadRequest($"Customer {account.CustomerId} not found!");
-            }
-
-            var id = _accountRepository.Set(new Account
+            var model = new Account
             {
                 Balance = account.InitialCredit ?? 0,
                 CustomerId = account.CustomerId
-            });
+            };
 
-            // if the account balance is positive, create a new transaction
-            if (account.InitialCredit.HasValue && account.InitialCredit.Value > 0)
-            {
-                await _transactionsServiceClient.PostAsync(id, account.InitialCredit.Value);
-            }
+            var id = _accountRepository.Set(model);
 
-            return CreatedAtAction(nameof(Get), new { id }, id);
+            // prepare the object for response
+            model.Id = id;
+
+            return Ok(model);
         }
     }
 }

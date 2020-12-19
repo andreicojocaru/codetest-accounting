@@ -67,14 +67,29 @@ Each of the services would have a concrete Business role, and keep it's state in
 - services have a tendency to become big, thus moving away from the microservices architecture (debatable, based on "what is a microservice?")
 - sooner or later, and Orchestrator Service might pop up, unless we choose an Event-based architecture
 
-
 ### Conclusion
 
 There are a few valid approaches, in this repository I choose to implement the `Variant 2 - Isolated (Micro)Services. Central Orchestrator`. The reason for that is that the business requirements are very small, and I wanted to avoid potential circular references between the `Accounts` and `Transaction` services. (e.g. creating a Transaction, would prompt the Account to update it's Balance; creating an Account with InitialCredit > 0, would prompt a new Transaction).
 
 The `BFF` service is resposible for Orchestrating the business logic, and all the Logical services expose functionality to allow changing their internal state. 
 
+Another responsability of the `BFF` is to aggregate data required for displaying the user information. It will get user information from the Customer service, account and balance information from the Accounts service, and the transactions list from the Transactions service.
+
 Because of the size of the project, I didn't approach the asyncronous notification (Message Bus or Pub/Sub) part. 
+
+## Implementation
+
+The solution consists of 3 services: Consumers, Accounts and Transactions. It also contains a `Backend for Frontend` implementation, used as an orchestrator for the operations required in the problem description.
+
+The `BFF` implementation exposes an API, as well as a UI Controller, together with a small UI implemented with ASP Razor.
+
+### Architecture
+
+Since the services are really small (only do Create and Read operations), the architecture is simple, layer-based. The layers are the `Application` and `Persistence (DataAccess)`. 
+
+For the sake of simplicity and code reusability, we have a generic `IRepository<>` interface and one in-memory repository implementation.
+
+> Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
 
 ## Deployment
 

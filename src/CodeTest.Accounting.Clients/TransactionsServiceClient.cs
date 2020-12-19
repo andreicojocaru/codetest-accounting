@@ -210,26 +210,20 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task PostAsync(int? accountId, decimal? amount)
+        public System.Threading.Tasks.Task PostAsync(TransactionDto input)
         {
-            return PostAsync(accountId, amount, System.Threading.CancellationToken.None);
+            return PostAsync(input, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task PostAsync(int? accountId, decimal? amount, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostAsync(TransactionDto input, System.Threading.CancellationToken cancellationToken)
         {
+            if (input == null)
+                throw new System.ArgumentNullException("input");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/transaction?");
-            if (accountId != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("accountId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            if (amount != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("amount") + "=").Append(System.Uri.EscapeDataString(ConvertToString(amount, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/transaction");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -237,7 +231,9 @@ namespace CodeTest.Accounting.ServiceClients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(input, _settings.Value));
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -266,12 +262,12 @@ namespace CodeTest.Accounting.ServiceClients
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<TransactionProblemDetails>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new TransactionApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new TransactionApiException<TransactionProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new TransactionApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -412,7 +408,7 @@ namespace CodeTest.Accounting.ServiceClients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.1.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class TransactionProblemDetails
+    public partial class ProblemDetails
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
@@ -440,6 +436,18 @@ namespace CodeTest.Accounting.ServiceClients
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
+
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.3.1.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class TransactionDto
+    {
+        [Newtonsoft.Json.JsonProperty("accountId", Required = Newtonsoft.Json.Required.Always)]
+        public int AccountId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Always)]
+        public decimal Amount { get; set; }
 
 
     }

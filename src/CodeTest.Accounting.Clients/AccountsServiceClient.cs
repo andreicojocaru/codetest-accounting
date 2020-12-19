@@ -134,14 +134,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task PostAsync(AccountDto account)
+        public System.Threading.Tasks.Task<Account> PostAsync(AccountDto account)
         {
             return PostAsync(account, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task PostAsync(AccountDto account, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Account> PostAsync(AccountDto account, System.Threading.CancellationToken cancellationToken)
         {
             if (account == null)
                 throw new System.ArgumentNullException("account");
@@ -159,6 +159,7 @@ namespace CodeTest.Accounting.ServiceClients
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -179,9 +180,14 @@ namespace CodeTest.Accounting.ServiceClients
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<Account>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new AccountApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         if (status_ == 400)

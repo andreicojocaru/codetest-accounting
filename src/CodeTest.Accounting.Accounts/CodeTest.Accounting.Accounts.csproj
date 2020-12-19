@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CodeTest.Accounting.Clients\CodeTest.Accounting.ServiceClients.csproj" />
     <ProjectReference Include="..\CodeTest.Accounting.Contracts\CodeTest.Accounting.Domain.csproj" />
     <ProjectReference Include="..\CodeTest.Accounting.Persistence\CodeTest.Accounting.Persistence.csproj" />
   </ItemGroup>
