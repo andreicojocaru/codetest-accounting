@@ -35,12 +35,12 @@ namespace CodeTest.Accounting.Transactions.Controllers
         }
 
         [HttpGet]
-        [Route("list-for-account")]
+        [Route("list-for-accounts")]
         [ProducesResponseType(typeof(IList<Transaction>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public ActionResult ListForCustomer(int accountId)
+        public ActionResult ListForAccounts(IList<int> accountIds)
         {
-            var transactions = _transactionsRepository.ListAll().Where(a => a.AccountId == accountId);
+            var transactions = _transactionsRepository.ListAll().Where(t => accountIds.Contains(t.AccountId));
 
             if (transactions.Any())
             {

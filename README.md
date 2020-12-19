@@ -112,6 +112,8 @@ In order to successfuly test the creation of an account we need two steps:
     "surname": "C"
    }
 
+![Create Customer](./docs/postman_1_create_customer.png)
+
  - using the `BFF`, open an account. This will orchestrate the validation and account creation across all services
 
 > POST https://localhost:50001/api/account/open-account
@@ -123,6 +125,15 @@ In order to successfuly test the creation of an account we need two steps:
   }
 
 If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `Customer not valid!` message.
+
+![Open Account](./docs/postman_2_open_account.png)
+
+ - using the `BFF`, query for User Information. This will orchestrate requests to all services, and consolidate returned data.
+
+ > GET https://localhost:50001/api/information/user/1
+
+ ![User Information](./docs/postman_3_user_information.png)
+
 
 ## Deployment
 
