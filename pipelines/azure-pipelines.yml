@@ -13,43 +13,35 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-# this can be a template, kept it like this for clarity 
+# this can be a template, kept it like this for clarity
+# somehow, the WorkingDirectory is not correctly picked up by the DotNetCoreCLI@2 task, we use plain shell instead :(
 - task: CmdLine@2
-  inputs:
-    script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
-    failOnStderr: true
-- task: DotNetCoreCLI@2
   displayName: "Publish service: Accounts"
   inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'  
+    script: 'dotnet publish'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
+    failOnStderr: true
 
-- task: DotNetCoreCLI@2
+- task: CmdLine@2
   displayName: "Publish service: Consumers"
   inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers'
+    script: 'dotnet publish'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Consumers'
+    failOnStderr: true
 
-- task: DotNetCoreCLI@2
+- task: CmdLine@2
   displayName: "Publish service: Transactions"
   inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
+    script: 'dotnet publish'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
+    failOnStderr: true
 
-- task: DotNetCoreCLI@2
+- task: CmdLine@2
   displayName: "Publish service: BFF"
   inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--output $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
+    script: 'dotnet publish'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
+    failOnStderr: true
 
 - task: PublishBuildArtifacts@1
   inputs:
