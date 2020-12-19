@@ -163,3 +163,10 @@ The resulting infrastructure will look like this:
 ![Terraform IaC](./docs/azure_deployment.png)
 
 > Note: because of the size of the project, all services and infrastructure is defined in the same repository and pipeline. In a true Enterprise environment, we would split each service and it's own infrastructure definition in separate repositories. Then, each repository will have isolated pipelines that build, provision and deploy only one service.
+
+
+### Azure Pipeline 
+
+The Azure DevOps project is publicly available here: https://dev.azure.com/acojocaru/codetest-accounting/_build.
+
+Latest build status: [![Build Status](https://dev.azure.com/acojocaru/codetest-accounting/_apis/build/status/andreicojocaru.codetest-accounting?branchName=main)](https://dev.azure.com/acojocaru/codetest-accounting/_build/latest?definitionId=12&branchName=main)
