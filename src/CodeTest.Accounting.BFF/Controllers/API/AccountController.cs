@@ -74,7 +74,7 @@ namespace CodeTest.Accounting.BFF.Controllers.API
 
                 return true;
             }
-            catch (CustomerApiException e)
+            catch (CustomerApiException)
             {
                 return false;
             }
