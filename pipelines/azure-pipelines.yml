@@ -94,7 +94,7 @@ stages:
                 ConnectionType: 'AzureRM'
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
-                WebAppName: 'codetest-accounting-customers' # this can be provided by Terraform
+                WebAppName: 'codetest-accounting-transactions' # this can be provided by Terraform
                 packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Transactions'
             
             - task: AzureRmWebAppDeployment@4
@@ -103,9 +103,8 @@ stages:
                 ConnectionType: 'AzureRM'
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
-                WebAppName: 'codetest-accounting-customers'
+                WebAppName: 'codetest-accounting-bff'
                 packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.BFF'
-                # the appsettings would normally come from the Terraform output
                 AppSettings: |
                   - ServiceUrls:Accounts https://codetest-accounting-accounts.azurewebsites.net
                   - ServiceUrls:Customers https://codetest-accounting-customers.azurewebsites.net
