@@ -18,29 +18,29 @@ steps:
 - task: CmdLine@2
   displayName: "Publish service: Accounts"
   inputs:
-    script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts --output $(Build.ArtifactStagingDirectory)'
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
     failOnStderr: true
 
 - task: CmdLine@2
   displayName: "Publish service: Consumers"
   inputs:
-    script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Consumers'
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Consumers'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers'
     failOnStderr: true
 
 - task: CmdLine@2
   displayName: "Publish service: Transactions"
   inputs:
-    script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
     failOnStderr: true
 
 - task: CmdLine@2
   displayName: "Publish service: BFF"
   inputs:
-    script: 'dotnet publish'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF --output $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
     failOnStderr: true
 
 - task: PublishBuildArtifacts@1
