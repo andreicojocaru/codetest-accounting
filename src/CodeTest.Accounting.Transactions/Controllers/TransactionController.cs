@@ -68,7 +68,7 @@ namespace CodeTest.Accounting.Transactions.Controllers
 
             // todo (out-of-scope): we should notify the Accounts Service to update Account Balance for the new Transaction
 
-            return CreatedAtAction(nameof(Get), new { id });
+            return CreatedAtAction(nameof(Get), new { id }, id);
         }
     }
 }

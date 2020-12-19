@@ -35,12 +35,9 @@ namespace CodeTest.Accounting.BFF.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            // first, check for Consumer account using the Consumer Service
-            var customer = await _customersServiceClient.GetAsync(input.CustomerId);
-
-            if (customer == null)
+            if (!await CheckCustomerValidity(input))
             {
-                return BadRequest($"Customer {input.CustomerId} not found!");
+                return BadRequest("Customer not valid!");
             }
 
             var account = await _accountsServiceClient.PostAsync(new AccountDto
@@ -59,7 +56,28 @@ namespace CodeTest.Accounting.BFF.Controllers.API
                 });
             }
 
-            throw new NotImplementedException();
+            return Ok();
+        }
+
+        private async Task<bool> CheckCustomerValidity(OpenAccountDto input)
+        {
+            try
+            {
+                var customer = await _customersServiceClient.GetAsync(input.CustomerId);
+
+                // we can do more validity checks here
+
+                if (customer == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (CustomerApiException e)
+            {
+                return false;
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace CodeTest.Accounting.Customers.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post(CustomerDto customer)
+        public ActionResult Post([FromBody] CustomerDto customer)
         {
             if (!ModelState.IsValid)
             {
