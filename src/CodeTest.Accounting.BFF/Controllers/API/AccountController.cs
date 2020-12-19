@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CodeTest.Accounting.BFF.Models;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CodeTest.Accounting.BFF.Controllers.API
 {
@@ -11,15 +11,18 @@ namespace CodeTest.Accounting.BFF.Controllers.API
     [Route("api/account")]
     public class AccountController : ControllerBase
     {
+        private readonly ILogger<AccountController> _logger;
         private readonly AccountsServiceClient _accountsServiceClient;
         private readonly CustomersServiceClient _customersServiceClient;
         private readonly TransactionsServiceClient _transactionsServiceClient;
 
         public AccountController(
+            ILogger<AccountController> logger,
             AccountsServiceClient accountsServiceClient,
             CustomersServiceClient customersServiceClient,
             TransactionsServiceClient transactionsServiceClient)
         {
+            _logger = logger;
             _accountsServiceClient = accountsServiceClient;
             _customersServiceClient = customersServiceClient;
             _transactionsServiceClient = transactionsServiceClient;
@@ -74,8 +77,9 @@ namespace CodeTest.Accounting.BFF.Controllers.API
 
                 return true;
             }
-            catch (CustomerApiException)
+            catch (CustomerApiException e)
             {
+                _logger.LogError(e, "Error received from Consumers service");
                 return false;
             }
         }
