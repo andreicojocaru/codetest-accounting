@@ -91,5 +91,31 @@ For the sake of simplicity and code reusability, we have a generic `IRepository<
 
 > Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
 
+
+### (Local) Testing
+
+In order to successfuly test the creation of an account we need two steps:
+ - using the `Customers` service, create a customer
+
+> POST https://localhost:50005/api/customer 
+
+> BODY:
+   {
+    "firstName": "Andi",
+    "surname": "C"
+   }
+
+ - using the `BFF`, open an account. This will orchestrate the validation and account creation across all services
+
+> POST https://localhost:50001/api/account/open-account
+
+> BODY: 
+  {
+    "customerId": 1,
+    "initialCredit": 150
+  }
+
+If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `Customer not valid!` message.
+
 ## Deployment
 
