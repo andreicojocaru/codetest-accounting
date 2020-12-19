@@ -23,10 +23,10 @@ steps:
     failOnStderr: true
 
 - task: CmdLine@2
-  displayName: "Publish service: Consumers"
+  displayName: "Publish service: Customers"
   inputs:
-    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Consumers'
-    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers'
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Customers'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Customers'
     failOnStderr: true
 
 - task: CmdLine@2
