@@ -77,7 +77,7 @@ stages:
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
                 WebAppName: 'codetest-accounting-accounts' # this can be provided by Terraform
-                packageForLinux: '$(System.DefaultWorkingDirectory)/**/CodeTest.Accounting.Accounts'
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Accounts'
 
             - task: AzureRmWebAppDeployment@4
               displayName: "Deploy service: Customers"
@@ -86,7 +86,7 @@ stages:
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
                 WebAppName: 'codetest-accounting-customers' # this can be provided by Terraform
-                packageForLinux: '$(System.DefaultWorkingDirectory)/**/CodeTest.Accounting.Customers'
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Customers'
             
             - task: AzureRmWebAppDeployment@4
               displayName: "Deploy service: Transactions"
@@ -95,7 +95,7 @@ stages:
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
                 WebAppName: 'codetest-accounting-customers' # this can be provided by Terraform
-                packageForLinux: '$(System.DefaultWorkingDirectory)/**/CodeTest.Accounting.Transactions'
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.Transactions'
             
             - task: AzureRmWebAppDeployment@4
               displayName: "Deploy service: BFF"
@@ -104,7 +104,7 @@ stages:
                 azureSubscription: 'Pay-As-You-Go Dev/Test(c8a108c1-7237-4a36-a396-1e7fbfcd8216)'
                 appType: 'webAppLinux'
                 WebAppName: 'codetest-accounting-customers'
-                packageForLinux: '$(System.DefaultWorkingDirectory)/**/CodeTest.Accounting.BFF'
+                packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.BFF'
                 # the appsettings would normally come from the Terraform output
                 AppSettings: |
                   - ServiceUrls:Accounts https://codetest-accounting-accounts.azurewebsites.net
