@@ -106,6 +106,6 @@ stages:
                 WebAppName: 'codetest-accounting-bff'
                 packageForLinux: '$(Pipeline.Workspace)/services/CodeTest.Accounting.BFF'
                 AppSettings: |
-                  - ServiceUrls:Accounts https://codetest-accounting-accounts.azurewebsites.net
-                  - ServiceUrls:Customers https://codetest-accounting-customers.azurewebsites.net
-                  - ServiceUrls:Transactions https://codetest-accounting-transactions.azurewebsites.net
+                  - ServiceUrls:Accounts "https://codetest-accounting-accounts.azurewebsites.net" 
+                  - ServiceUrls:Customers "https://codetest-accounting-customers.azurewebsites.net" 
+                  - ServiceUrls:Transactions "https://codetest-accounting-transactions.azurewebsites.net"
