@@ -13,9 +13,41 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# this can be a template, kept it like this for clarity 
 - task: DotNetCoreCLI@2
   displayName: "Publish service: Accounts"
   inputs:
     command: 'publish'
     publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
     workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
+
+- task: DotNetCoreCLI@2
+  displayName: "Publish service: Consumers"
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Consumers'
+
+- task: DotNetCoreCLI@2
+  displayName: "Publish service: Transactions"
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
+
+- task: DotNetCoreCLI@2
+  displayName: "Publish service: BFF"
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'services'
+    publishLocation: 'Container'
