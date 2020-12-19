@@ -1,0 +1,53 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+# no need to trigger builds on PRs yet
+pr: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+# this can be a template, kept it like this for clarity
+# somehow, the WorkingDirectory is not correctly picked up by the DotNetCoreCLI@2 task, we use plain shell instead :(
+- task: CmdLine@2
+  displayName: "Publish service: Accounts"
+  inputs:
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Accounts'
+    failOnStderr: true
+
+- task: CmdLine@2
+  displayName: "Publish service: Customers"
+  inputs:
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Customers'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Customers'
+    failOnStderr: true
+
+- task: CmdLine@2
+  displayName: "Publish service: Transactions"
+  inputs:
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Transactions'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.Transactions'
+    failOnStderr: true
+
+- task: CmdLine@2
+  displayName: "Publish service: BFF"
+  inputs:
+    script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.BFF'
+    workingDirectory: '$(Build.SourcesDirectory)/src/CodeTest.Accounting.BFF'
+    failOnStderr: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'services'
+    publishLocation: 'Container'
