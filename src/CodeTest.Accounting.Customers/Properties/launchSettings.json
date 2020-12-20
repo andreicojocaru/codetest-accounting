@@ -23,8 +23,8 @@
     "CodeTest.Accounting.Customers": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:50004;https://localhost:50005",
-      "launchBrowser": true,
-      "launchUrl": "/swagger",
+      //"launchBrowser": true,
+      //"launchUrl": "/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

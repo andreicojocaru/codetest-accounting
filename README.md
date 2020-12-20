@@ -26,6 +26,7 @@ A code test showcasing a (small) Accounting backend distributed system based on 
     - [Builds (Continuous Integration)](#builds-continuous-integration)
     - [Deployments (Continuous Delivery)](#deployments-continuous-delivery)
     - [Azure Pipelines](#azure-pipelines)
+  - [User Interface](#user-interface)
 
 ## Problem Statement
 
@@ -200,7 +201,7 @@ GET https://localhost:50001/api/information/user/1
 
 The application builds and deployments are made using Azure DevOps.
 
-The pipeline file can be found under (`./pipelines/azure-pipelines.yml`)[https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml].
+The pipeline file can be found under [./pipelines/azure-pipelines.yml](https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml).
 
 ### Builds (Continuous Integration)
 
@@ -210,7 +211,7 @@ As part of the Build steps, the Unit Tests are being ran.
 
 ### Deployments (Continuous Delivery)
 
-Under the path (`./pipelines/terraform`)[https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform] there are Terraform definitions for Infrastructure as Code.
+Under the path [./pipelines/terraform](https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform) there are Terraform definitions for Infrastructure as Code.
 
 These definitions create `Web App Plans` and `Web App Services` in `Azure`. The pipeline can deploy and rehydrate the infrastructure on every service deployment.
 
@@ -233,3 +234,17 @@ The `BFF` project can be accessed at: http://codetest-accounting-bff.azurewebsit
 The other services also have exposed swagger UIs, to easily do admin tasks (not necessarily using the BFF orchestrator).
 
 > Note: in a real Production environment, only the `BFF` would be accessible through the Internet. The logical services would only be exposed as internal services, only accessable through the `BFF`.
+
+## User Interface
+
+The `BFF` project contains a (very) small User Interface with basic functionality.
+
+![User Interface](docs/bff_ui.png)
+
+On the page there are 3 forms: create customer, open account and view user information.
+
+All the actions will redirect to the same page, and fill out any existing information.
+
+The `HomeController` in the `BFF` project is responsible for manipulating view models and calling the correct services. 
+
+The `BFF` also exposes an API for the 2 main operations required: Open account, and View user information. This API can be better suited for a *Single Page Application*, and kept there for showcase purposes.
