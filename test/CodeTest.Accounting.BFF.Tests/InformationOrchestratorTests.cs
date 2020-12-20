@@ -77,12 +77,31 @@ namespace CodeTest.Accounting.BFF.Tests
                 .ReturnsAsync(expectedTransactions);
 
             // Act
-            await _sut.GetUserInfoAsync(customerId);
+            var actual = await _sut.GetUserInfoAsync(customerId);
 
             // Assert
             _customersServiceClientMock.Verify(c => c.GetAsync(customerId), Times.Once);
             _accountsServiceClientMock.Verify(a => a.ListForCustomerAsync(customerId), Times.Once);
             _transactionsServiceClientMock.Verify(a => a.ListForAccountsAsync(expectedAccountsIds), Times.Once);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(expectedCustomer.Surname, actual.Surname);
+            Assert.AreEqual(expectedCustomer.FirstName, actual.Name);
+            Assert.AreEqual(expectedAccounts.Count, actual.Accounts.Count);
+            Assert.AreEqual(expectedTransactions.Count, actual.Transactions.Count);
+
+            for (var i = 0; i < expectedAccounts.Count; i++)
+            {
+                Assert.AreEqual(expectedAccounts[i].Id, actual.Accounts[i].AccountId);
+                Assert.AreEqual(expectedAccounts[i].Balance, actual.Accounts[i].Balance);
+            }
+
+            for (var i = 0; i < expectedTransactions.Count; i++)
+            {
+                Assert.AreEqual(expectedTransactions[i].Id, actual.Transactions[i].TransactionId);
+                Assert.AreEqual(expectedTransactions[i].Amount, actual.Transactions[i].Amount);
+                Assert.AreEqual(expectedTransactions[i].AccountId, actual.Transactions[i].AccountId);
+            }
         }
     }
 }
