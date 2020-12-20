@@ -106,6 +106,18 @@ Each Logical service exposes a Swagger definition, which I imported into NSwag t
 
 Multiple approaches are valid, and these clients can be generated either dynamically at build time, or statically using the desktop NSwag Studio. I prefer the latter since the project is small and the client code can easily be inspected.
 
+### Running the project
+
+In order to run the project, [NET Core SDK v3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) is required. Once installed, the project can be built or published using the `dotnet` commands in CLI.
+
+Using Visual Studio (2019), the project sources can be explored. Inside the solution there is a `Services` folder containing all the logical services.
+
+The `BFF` project is the orchestrator so it contains business logic, as well as a simple UI.
+
+> Recommended: inside Visual Studio, set multiple startup services for `Accounts`, `Customers`, `Transactions` and `BFF`. This will start all the services at once.
+
+We can use `Postman` or the Swagger UI to call endpoints for either logical services, or the BFF.
+
 ### (Local) Testing
 
 In order to successfuly test the creation of an account we need two steps:
