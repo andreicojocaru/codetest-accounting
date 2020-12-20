@@ -19,7 +19,6 @@ namespace CodeTest.Accounting.BFF.Core
             TransactionsServiceClient transactionsServiceClient)
         {
             _logger = logger;
-            _logger = logger;
             _accountsServiceClient = accountsServiceClient;
             _customersServiceClient = customersServiceClient;
             _transactionsServiceClient = transactionsServiceClient;

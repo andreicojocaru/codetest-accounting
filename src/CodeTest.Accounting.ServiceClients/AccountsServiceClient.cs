@@ -134,14 +134,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Account> PostAsync(AccountDto account)
+        public virtual System.Threading.Tasks.Task<Account> PostAsync(AccountDto account)
         {
             return PostAsync(account, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Account> PostAsync(AccountDto account, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Account> PostAsync(AccountDto account, System.Threading.CancellationToken cancellationToken)
         {
             if (account == null)
                 throw new System.ArgumentNullException("account");
@@ -220,14 +220,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Account>> ListForCustomerAsync(int? customerId)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Account>> ListForCustomerAsync(int? customerId)
         {
             return ListForCustomerAsync(customerId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="AccountApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Account>> ListForCustomerAsync(int? customerId, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Account>> ListForCustomerAsync(int? customerId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/list-for-customer?");

@@ -129,14 +129,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds)
         {
             return ListForAccountsAsync(accountIds, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Transaction>> ListForAccountsAsync(System.Collections.Generic.IEnumerable<int> accountIds, System.Threading.CancellationToken cancellationToken)
         {
             if (accountIds == null)
                 throw new System.ArgumentNullException("accountIds");
@@ -211,14 +211,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task PostAsync(TransactionDto input)
+        public virtual System.Threading.Tasks.Task PostAsync(TransactionDto input)
         {
             return PostAsync(input, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="TransactionApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task PostAsync(TransactionDto input, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task PostAsync(TransactionDto input, System.Threading.CancellationToken cancellationToken)
         {
             if (input == null)
                 throw new System.ArgumentNullException("input");

@@ -49,14 +49,14 @@ namespace CodeTest.Accounting.ServiceClients
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="CustomerApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Customer> GetAsync(int id)
+        public virtual System.Threading.Tasks.Task<Customer> GetAsync(int id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="CustomerApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Customer> GetAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Customer> GetAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
