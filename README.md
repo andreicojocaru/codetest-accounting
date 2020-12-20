@@ -26,6 +26,7 @@ A code test showcasing a (small) Accounting backend distributed system based on 
     - [Builds (Continuous Integration)](#builds-continuous-integration)
     - [Deployments (Continuous Delivery)](#deployments-continuous-delivery)
     - [Azure Pipelines](#azure-pipelines)
+  - [User Interface](#user-interface)
 
 ## Problem Statement
 
@@ -233,3 +234,17 @@ The `BFF` project can be accessed at: http://codetest-accounting-bff.azurewebsit
 The other services also have exposed swagger UIs, to easily do admin tasks (not necessarily using the BFF orchestrator).
 
 > Note: in a real Production environment, only the `BFF` would be accessible through the Internet. The logical services would only be exposed as internal services, only accessable through the `BFF`.
+
+## User Interface
+
+The `BFF` project contains a (very) small User Interface with basic functionality.
+
+![User Interface](docs/bff_ui.png)
+
+On the page there are 3 forms: create customer, open account and view user information.
+
+All the actions will redirect to the same page, and fill out any existing information.
+
+The `HomeController` in the `BFF` project is responsible for manipulating view models and calling the correct services. 
+
+The `BFF` also exposes an API for the 2 main operations required: Open account, and View user information. This API can be better suited for a *Single Page Application*, and kept there for showcase purposes.

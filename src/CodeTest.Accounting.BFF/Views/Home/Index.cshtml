@@ -1,8 +1,111 @@
-﻿@{
+﻿@model CodeTest.Accounting.BFF.Models.AccountingViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Code Test - Accounting</h1>
+
+    @if (Model != null)
+    {
+        if (Model.CreateCustomerDto != null)
+        {
+            using (Html.BeginForm("CreateCustomer", "Home", FormMethod.Post))
+            {
+                <h3>Create Customer</h3>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => m.CreateCustomerDto.FirstName)</label>
+                    @Html.EditorFor(m => m.CreateCustomerDto.FirstName, new { @class = "form-control" })
+                </fieldset>
+
+                <fieldset>
+                    <label>@Html.LabelFor(m => m.CreateCustomerDto.Surname)</label>
+                    @Html.EditorFor(m => m.CreateCustomerDto.Surname, new { @class = "form-control" })
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">Create new customer</button>
+            }
+        }
+
+        if (Model.OpenAccountDto != null)
+        {
+            <hr />
+            using (Html.BeginForm("OpenAccount", "Home", FormMethod.Post))
+            {
+                <h3>Open Account</h3>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => m.OpenAccountDto.CustomerId)</label>
+                    @Html.EditorFor(m => m.OpenAccountDto.CustomerId, new { @class = "form-control" })
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => m.OpenAccountDto.InitialCredit)</label>
+                    @Html.EditorFor(m => m.OpenAccountDto.InitialCredit, new { @class = "form-control" })
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">Open new account</button>
+            }
+        }
+
+        <hr />
+        <h3>User Information</h3>
+        using (Html.BeginForm("UserInformation", "Home", FormMethod.Get))
+        {
+            <fieldset class="form-group">
+                <label>@Html.Label("CustomerId")</label>
+                @Html.Editor("customerId", new { @class = "form-control" })
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary">View User Information</button>
+        }
+
+        @if (Model.UserInfo != null)
+        {
+            <fieldset class="form-group">
+                <label>@Html.LabelFor(m => m.UserInfo.Name)</label>
+                @Html.DisplayFor(m => m.UserInfo.Name, new { @class = "form-control" })
+            </fieldset>
+            <fieldset class="form-group">
+                <label>@Html.LabelFor(m => m.UserInfo.Surname)</label>
+                @Html.DisplayFor(m => m.UserInfo.Surname, new { @class = "form-control" })
+            </fieldset>
+            <fieldset class="form-group">
+                <label>@Html.LabelFor(m => m.UserInfo.Balance)</label>
+                @Html.DisplayFor(m => m.UserInfo.Balance, new { @class = "form-control" })
+            </fieldset>
+
+            @foreach (var account in Model.UserInfo.Accounts)
+            {
+                <hr />
+                <h4>Accounts</h4>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => account.AccountId)</label>
+                    @Html.DisplayFor(m => account.AccountId, new { @class = "form-control" })
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => account.Balance)</label>
+                    @Html.DisplayFor(m => account.Balance, new { @class = "form-control" })
+                </fieldset>
+            }
+
+            @foreach (var transaction in Model.UserInfo.Transactions)
+            {
+                <hr />
+                <h4>Transactions</h4>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => transaction.TransactionId)</label>
+                    @Html.DisplayFor(m => transaction.TransactionId, new { @class = "form-control" })
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => transaction.AccountId)</label>
+                    @Html.DisplayFor(m => transaction.AccountId, new { @class = "form-control" })
+                </fieldset>
+                <fieldset class="form-group">
+                    <label>@Html.LabelFor(m => transaction.Amount)</label>
+                    @Html.DisplayFor(m => transaction.Amount, new { @class = "form-control" })
+                </fieldset>
+            }
+        }
+    }
 </div>
+

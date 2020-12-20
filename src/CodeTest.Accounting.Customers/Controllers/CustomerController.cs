@@ -30,26 +30,29 @@ namespace CodeTest.Accounting.Customers.Controllers
                 return Ok(customer);
             }
 
-            return NoContent();
+            return BadRequest($"Customer not found for id: {id}");
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(Customer), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> Post([FromBody] CustomerDto customer)
+        public async Task<ActionResult<Customer>> Post([FromBody] CustomerDto customer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var id = await _customerRepository.SetAsync(new Customer
+            var model = new Customer
             {
                 FirstName = customer.FirstName,
                 Surname = customer.Surname
-            });
+            };
 
-            return CreatedAtAction(nameof(Get), new { id }, id);
+            var id = await _customerRepository.SetAsync(model);
+            model.Id = id;
+
+            return Ok(model);
         }
     }
 }

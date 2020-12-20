@@ -26,7 +26,10 @@ namespace CodeTest.Accounting.BFF.Tests
             _customersServiceClientMock = new Mock<CustomersServiceClient>(() => new CustomersServiceClient(new MockHttpClient()));
             _transactionsServiceClientMock = new Mock<TransactionsServiceClient>(() => new TransactionsServiceClient(new MockHttpClient()));
 
+            var loggerMock = new Mock<ILogger<InformationOrchestrator>>();
+
             _sut = new InformationOrchestrator(
+                loggerMock.Object,
                 _accountsServiceClientMock.Object,
                 _customersServiceClientMock.Object,
                 _transactionsServiceClientMock.Object);

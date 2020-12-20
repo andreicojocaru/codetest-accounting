@@ -59,7 +59,7 @@ namespace CodeTest.Accounting.Customers.Tests
             // Assert
             Assert.NotNull(actual?.Result);
 
-            var statusResult = actual.Result as NoContentResult;
+            var statusResult = actual.Result as BadRequestObjectResult;
             Assert.NotNull(statusResult);
         }
 
@@ -78,7 +78,8 @@ namespace CodeTest.Accounting.Customers.Tests
 
             // Assert
             Assert.NotNull(actual);
-            Assert.True(actual is CreatedAtActionResult);
+            var result = actual.Result as OkObjectResult;
+            Assert.NotNull(result);
         }
     }
 }

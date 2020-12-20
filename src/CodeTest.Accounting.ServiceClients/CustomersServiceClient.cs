@@ -18,7 +18,7 @@ namespace CodeTest.Accounting.ServiceClients
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.9.4.0 (NJsonSchema v10.3.1.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class CustomersServiceClient
     {
-        private string _baseUrl = "http://localhost:50004";
+        private string _baseUrl = "https://localhost:50005";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -129,14 +129,14 @@ namespace CodeTest.Accounting.ServiceClients
         }
 
         /// <exception cref="CustomerApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task PostAsync(CustomerDto customer)
+        public System.Threading.Tasks.Task<Customer> PostAsync(CustomerDto customer)
         {
             return PostAsync(customer, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="CustomerApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task PostAsync(CustomerDto customer, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Customer> PostAsync(CustomerDto customer, System.Threading.CancellationToken cancellationToken)
         {
             if (customer == null)
                 throw new System.ArgumentNullException("customer");
@@ -154,6 +154,7 @@ namespace CodeTest.Accounting.ServiceClients
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
@@ -174,9 +175,14 @@ namespace CodeTest.Accounting.ServiceClients
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 201)
+                        if (status_ == 200)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<Customer>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new CustomerApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         if (status_ == 400)
