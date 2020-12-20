@@ -200,7 +200,7 @@ GET https://localhost:50001/api/information/user/1
 
 The application builds and deployments are made using Azure DevOps.
 
-The pipeline file can be found under (`./pipelines/azure-pipelines.yml`)[https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml].
+The pipeline file can be found under [./pipelines/azure-pipelines.yml](https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml).
 
 ### Builds (Continuous Integration)
 
@@ -210,7 +210,7 @@ As part of the Build steps, the Unit Tests are being ran.
 
 ### Deployments (Continuous Delivery)
 
-Under the path (`./pipelines/terraform`)[https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform] there are Terraform definitions for Infrastructure as Code.
+Under the path [./pipelines/terraform](https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform) there are Terraform definitions for Infrastructure as Code.
 
 These definitions create `Web App Plans` and `Web App Services` in `Azure`. The pipeline can deploy and rehydrate the infrastructure on every service deployment.
 
