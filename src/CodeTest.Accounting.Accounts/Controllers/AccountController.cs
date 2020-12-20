@@ -23,9 +23,9 @@ namespace CodeTest.Accounting.Accounts.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(Account), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Get(int id)
+        public async Task<ActionResult<Account>> Get(int id)
         {
-            var account = _accountRepository.Get(id);
+            var account = await _accountRepository.GetAsync(id);
 
             if (account != null)
             {
@@ -39,11 +39,12 @@ namespace CodeTest.Accounting.Accounts.Controllers
         [Route("list-for-customer")]
         [ProducesResponseType(typeof(IList<Account>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public ActionResult ListForCustomer(int customerId)
+        public async Task<ActionResult<IList<Account>>> ListForCustomer(int customerId)
         {
-            var accounts = _accountRepository.ListAll().Where(a => a.CustomerId == customerId);
+            var allAccounts = await _accountRepository.ListAllAsync();
+            var accounts = allAccounts?.Where(a => a.CustomerId == customerId);
 
-            if (accounts.Any())
+            if (accounts != null && accounts.Any())
             {
                 return Ok(accounts);
             }
@@ -56,7 +57,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<Account>> Post([FromBody] AccountDto account)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || account.CustomerId == default)
             {
                 return BadRequest(ModelState);
             }
@@ -67,7 +68,7 @@ namespace CodeTest.Accounting.Accounts.Controllers
                 CustomerId = account.CustomerId
             };
 
-            var id = _accountRepository.Set(model);
+            var id = await _accountRepository.SetAsync(model);
 
             // prepare the object for response
             model.Id = id;

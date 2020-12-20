@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using CodeTest.Accounting.Domain;
 using CodeTest.Accounting.Persistence;
 using CodeTest.Accounting.Transactions.Models;
@@ -22,9 +23,9 @@ namespace CodeTest.Accounting.Transactions.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Transaction), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public ActionResult Get(int id)
+        public async Task<ActionResult<Transaction>> Get(int id)
         {
-            var transaction = _transactionsRepository.Get(id);
+            var transaction = await _transactionsRepository.GetAsync(id);
 
             if (transaction != null)
             {
@@ -38,11 +39,12 @@ namespace CodeTest.Accounting.Transactions.Controllers
         [Route("list-for-accounts")]
         [ProducesResponseType(typeof(IList<Transaction>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public ActionResult ListForAccounts(IList<int> accountIds)
+        public async Task<ActionResult<IList<Transaction>>> ListForAccounts(IList<int> accountIds)
         {
-            var transactions = _transactionsRepository.ListAll().Where(t => accountIds.Contains(t.AccountId));
+            var allTransactions = await _transactionsRepository.ListAllAsync();
+            var transactions = allTransactions?.Where(t => accountIds.Contains(t.AccountId));
 
-            if (transactions.Any())
+            if (transactions != null && transactions.Any())
             {
                 return Ok(transactions);
             }
@@ -53,14 +55,14 @@ namespace CodeTest.Accounting.Transactions.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post([FromBody] TransactionDto input)
+        public async Task<ActionResult> Post([FromBody] TransactionDto input)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || input.AccountId == default)
             {
                 return BadRequest(ModelState);
             }
 
-            var id = _transactionsRepository.Set(new Transaction
+            var id = await _transactionsRepository.SetAsync(new Transaction
             {
                 AccountId = input.AccountId,
                 Amount = input.Amount

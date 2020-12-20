@@ -92,6 +92,8 @@ The `BFF` implementation exposes an API, as well as a UI Controller, together wi
 
 Since the services are really small (only do Create and Read operations), the architecture is simple, layer-based. The layers are the `Application` and `Persistence (DataAccess)`. 
 
+> Note: normally, we would split the `Infrastructure` layer (Controllers) from the `Application` layer. In this test, having the split would only add unnecessary classes, to I prefered to have the 2 layers merged - thus the `Controllers` have direct access to the `Data Access` layer.
+
 For the sake of simplicity and code reusability, we have a generic `IRepository<>` interface and one in-memory repository implementation.
 
 > Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
