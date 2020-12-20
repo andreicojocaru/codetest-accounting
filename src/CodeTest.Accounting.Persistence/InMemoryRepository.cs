@@ -22,7 +22,7 @@ namespace CodeTest.Accounting.Persistence
                 return Task.FromResult(_entities[id]);
             }
 
-            return default;
+            return Task.FromResult<TEntity>(default);
         }
 
         public Task<List<TEntity>> ListAllAsync()
