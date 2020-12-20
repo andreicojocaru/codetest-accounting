@@ -1,6 +1,32 @@
 # Code Test - Accounting
 A code test showcasing a (small) Accounting backend distributed system based on microservices.
 
+## Table of Contents
+- [Code Test - Accounting](#code-test---accounting)
+  - [Table of Contents](#table-of-contents)
+  - [Problem Statement](#problem-statement)
+  - [Solution Analysis](#solution-analysis)
+    - [Variant 1 - Self-Orchestrating (Micro)Services](#variant-1---self-orchestrating-microservices)
+      - [Pros](#pros)
+      - [Cons](#cons)
+    - [Variant 2 - Isolated (Micro)Services. Central Orchestrator.](#variant-2---isolated-microservices-central-orchestrator)
+      - [Pros](#pros-1)
+      - [Cons](#cons-1)
+    - [Variant 3 - Backend for Frontend + Domain Driven Designed Services](#variant-3---backend-for-frontend--domain-driven-designed-services)
+      - [Pros](#pros-2)
+      - [Cons](#cons-2)
+    - [Conclusion](#conclusion)
+  - [Implementation](#implementation)
+    - [Architecture](#architecture)
+    - [Service Clients](#service-clients)
+    - [Running the project](#running-the-project)
+    - [Automated Testing](#automated-testing)
+    - [Local Manual Testing](#local-manual-testing)
+  - [Deployment](#deployment)
+    - [Builds (Continuous Integration)](#builds-continuous-integration)
+    - [Deployments (Continuous Delivery)](#deployments-continuous-delivery)
+    - [Azure Pipelines](#azure-pipelines)
+
 ## Problem Statement
 
 The assessment consists of an API to be used for opening a new “current account” of already existing
@@ -92,6 +118,8 @@ The `BFF` implementation exposes an API, as well as a UI Controller, together wi
 
 Since the services are really small (only do Create and Read operations), the architecture is simple, layer-based. The layers are the `Application` and `Persistence (DataAccess)`. 
 
+> Note: normally, we would split the `Infrastructure` layer (Controllers) from the `Application` layer. In this test, having the split would only add unnecessary classes, to I prefered to have the 2 layers merged - thus the `Controllers` have direct access to the `Data Access` layer.
+
 For the sake of simplicity and code reusability, we have a generic `IRepository<>` interface and one in-memory repository implementation.
 
 > Note: In a real microservices scenario, databases and data access implementations should be separate. This allows segration of data storage technologies, as well as good responsability isolation among teams. Again, this data access code is shared for the sake of `DRY` (Don't repeat yourself).
@@ -104,30 +132,56 @@ Each Logical service exposes a Swagger definition, which I imported into NSwag t
 
 Multiple approaches are valid, and these clients can be generated either dynamically at build time, or statically using the desktop NSwag Studio. I prefer the latter since the project is small and the client code can easily be inspected.
 
-### (Local) Testing
+### Running the project
+
+In order to run the project, [NET Core SDK v3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) is required. Once installed, the project can be built or published using the `dotnet` commands in CLI.
+
+Using Visual Studio (2019), the project sources can be explored. Inside the solution there is a `Services` folder containing all the logical services.
+
+The `BFF` project is the orchestrator so it contains business logic, as well as a simple UI.
+
+> Recommended: inside Visual Studio, set multiple startup services for `Accounts`, `Customers`, `Transactions` and `BFF`. This will start all the services at once.
+
+We can use `Postman` or the Swagger UI to call endpoints for either logical services, or the BFF.
+
+
+### Automated Testing
+
+The solution contains automated unit tests, that can be ran inside Visual Studio, or using the `dotnet` CLI.
+
+There is one test project for each service, including one project for the `Persistence` layer.
+
+The technologies used for unit testing are `NUnit` and `Moq`.
+
+> Note: no integration, component or end-to-end tests are implemented yet.
+
+### Local Manual Testing
 
 In order to successfuly test the creation of an account we need two steps:
  - using the `Customers` service, create a customer
 
-> POST https://localhost:50005/api/customer 
+```
+POST https://localhost:50005/api/customer 
 
-> BODY:
+BODY:
    {
     "firstName": "Andi",
     "surname": "C"
    }
-
+```
 ![Create Customer](./docs/postman_1_create_customer.png)
 
  - using the `BFF`, open an account. This will orchestrate the validation and account creation across all services
 
-> POST https://localhost:50001/api/account/open-account
+```
+POST https://localhost:50001/api/account/open-account
 
-> BODY: 
+BODY: 
   {
     "customerId": 1,
     "initialCredit": 150
   }
+```
 
 If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `Customer not valid!` message.
 
@@ -135,9 +189,11 @@ If the customer doesn't exist, the `BFF` will return a `400 Bad Request` with `C
 
  - using the `BFF`, query for User Information. This will orchestrate requests to all services, and consolidate returned data.
 
- > GET https://localhost:50001/api/information/user/1
+```
+GET https://localhost:50001/api/information/user/1
+```
 
- ![User Information](./docs/postman_3_user_information.png)
+![User Information](./docs/postman_3_user_information.png)
 
 
 ## Deployment
@@ -146,11 +202,13 @@ The application builds and deployments are made using Azure DevOps.
 
 The pipeline file can be found under (`./pipelines/azure-pipelines.yml`)[https://github.com/andreicojocaru/codetest-accounting/blob/main/pipelines/azure-pipelines.yml].
 
-### Builds
+### Builds (Continuous Integration)
 
 The pipeline contains a simple `dotnet publish` for each service. This command runs `restore, build and publish` under the hood. The build artifacts are then published as pipeline artifacts, to be downloaded and deployed later on in the deployment stage.
 
-### Deployments
+As part of the Build steps, the Unit Tests are being ran.
+
+### Deployments (Continuous Delivery)
 
 Under the path (`./pipelines/terraform`)[https://github.com/andreicojocaru/codetest-accounting/tree/main/pipelines/terraform] there are Terraform definitions for Infrastructure as Code.
 
@@ -164,9 +222,14 @@ The resulting infrastructure will look like this:
 
 > Note: because of the size of the project, all services and infrastructure is defined in the same repository and pipeline. In a true Enterprise environment, we would split each service and it's own infrastructure definition in separate repositories. Then, each repository will have isolated pipelines that build, provision and deploy only one service.
 
-
-### Azure Pipeline 
+### Azure Pipelines
 
 The Azure DevOps project is publicly available here: https://dev.azure.com/acojocaru/codetest-accounting/_build.
 
 Latest build status: [![Build Status](https://dev.azure.com/acojocaru/codetest-accounting/_apis/build/status/andreicojocaru.codetest-accounting?branchName=main)](https://dev.azure.com/acojocaru/codetest-accounting/_build/latest?definitionId=12&branchName=main)
+
+The `BFF` project can be accessed at: http://codetest-accounting-bff.azurewebsites.net/
+
+The other services also have exposed swagger UIs, to easily do admin tasks (not necessarily using the BFF orchestrator).
+
+> Note: in a real Production environment, only the `BFF` would be accessible through the Internet. The logical services would only be exposed as internal services, only accessable through the `BFF`.

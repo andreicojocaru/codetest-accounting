@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using CodeTest.Accounting.BFF.Core;
 using CodeTest.Accounting.BFF.Models;
-using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,20 +12,14 @@ namespace CodeTest.Accounting.BFF.Controllers.API
     public class AccountController : ControllerBase
     {
         private readonly ILogger<AccountController> _logger;
-        private readonly AccountsServiceClient _accountsServiceClient;
-        private readonly CustomersServiceClient _customersServiceClient;
-        private readonly TransactionsServiceClient _transactionsServiceClient;
+        private readonly AccountsOrchestrator _accountsOrchestrator;
 
         public AccountController(
             ILogger<AccountController> logger,
-            AccountsServiceClient accountsServiceClient,
-            CustomersServiceClient customersServiceClient,
-            TransactionsServiceClient transactionsServiceClient)
+            AccountsOrchestrator accountsOrchestrator)
         {
             _logger = logger;
-            _accountsServiceClient = accountsServiceClient;
-            _customersServiceClient = customersServiceClient;
-            _transactionsServiceClient = transactionsServiceClient;
+            _accountsOrchestrator = accountsOrchestrator;
         }
 
         [HttpPost]
@@ -38,50 +32,19 @@ namespace CodeTest.Accounting.BFF.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            if (!await CheckCustomerValidity(input))
+            try
             {
-                return BadRequest("Customer not valid!");
+                await _accountsOrchestrator.OpenAccountAsync(input);
             }
-
-            var account = await _accountsServiceClient.PostAsync(new AccountDto
+            catch (CustomerNotValidException e)
             {
-                CustomerId = input.CustomerId,
-                InitialCredit = input.InitialCredit
-            });
+                const string message = "Customer not valid!";
 
-            // if the account balance is positive, create a new transaction
-            if (input.InitialCredit.HasValue && input.InitialCredit.Value > 0)
-            {
-                await _transactionsServiceClient.PostAsync(new TransactionDto
-                {
-                    AccountId = account.Id,
-                    Amount = input.InitialCredit.Value
-                });
+                _logger.LogError(e, message);
+                return BadRequest(message);
             }
 
             return Ok();
-        }
-
-        private async Task<bool> CheckCustomerValidity(OpenAccountDto input)
-        {
-            try
-            {
-                var customer = await _customersServiceClient.GetAsync(input.CustomerId);
-
-                // we can do more validity checks here
-
-                if (customer == null)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            catch (CustomerApiException e)
-            {
-                _logger.LogError(e, "Error received from Consumers service");
-                return false;
-            }
         }
     }
 }

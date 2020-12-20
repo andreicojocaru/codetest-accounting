@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using CodeTest.Accounting.Customers.Models;
 using CodeTest.Accounting.Domain;
 using CodeTest.Accounting.Persistence;
@@ -20,9 +21,9 @@ namespace CodeTest.Accounting.Customers.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Customer), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public ActionResult Get(int id)
+        public async Task<ActionResult<Customer>> Get(int id)
         {
-            var customer = _customerRepository.Get(id);
+            var customer = await _customerRepository.GetAsync(id);
 
             if (customer != null)
             {
@@ -35,14 +36,14 @@ namespace CodeTest.Accounting.Customers.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public ActionResult Post([FromBody] CustomerDto customer)
+        public async Task<ActionResult> Post([FromBody] CustomerDto customer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var id = _customerRepository.Set(new Customer
+            var id = await _customerRepository.SetAsync(new Customer
             {
                 FirstName = customer.FirstName,
                 Surname = customer.Surname

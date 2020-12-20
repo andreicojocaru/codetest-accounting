@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CodeTest.Accounting.Domain;
 
 namespace CodeTest.Accounting.Persistence
@@ -13,10 +14,10 @@ namespace CodeTest.Accounting.Persistence
     {
         // note: Int32 type Ids are picked just for easiness to work with while testing
         // normally, we should be using GUIDs or more complex data types
-        TEntity Get(int id);
+        Task<TEntity> GetAsync(int id);
 
-        IList<TEntity> ListAll();
+        Task<List<TEntity>> ListAllAsync();
 
-        int Set(TEntity entity);
+        Task<int> SetAsync(TEntity entity);
     }
 }

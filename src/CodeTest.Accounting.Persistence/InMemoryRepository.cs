@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CodeTest.Accounting.Domain;
 
 namespace CodeTest.Accounting.Persistence
@@ -14,22 +15,22 @@ namespace CodeTest.Accounting.Persistence
             _entities = new Dictionary<int, TEntity>();
         }
 
-        public TEntity Get(int id)
+        public Task<TEntity> GetAsync(int id)
         {
             if (_entities.ContainsKey(id))
             {
-                return _entities[id];
+                return Task.FromResult(_entities[id]);
             }
 
-            return default;
+            return Task.FromResult<TEntity>(default);
         }
 
-        public IList<TEntity> ListAll()
+        public Task<List<TEntity>> ListAllAsync()
         {
-            return _entities.Values.ToList();
+            return Task.FromResult(_entities.Values.ToList());
         }
 
-        public int Set(TEntity entity)
+        public Task<int> SetAsync(TEntity entity)
         {
             var last = _entities.Keys.LastOrDefault();
             var id = last + 1;
@@ -37,7 +38,7 @@ namespace CodeTest.Accounting.Persistence
             entity.Id = id;
             _entities.Add(id, entity);
 
-            return id;
+            return Task.FromResult(id);
         }
     }
 }

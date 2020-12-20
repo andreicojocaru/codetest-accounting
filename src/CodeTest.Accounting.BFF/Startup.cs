@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using CodeTest.Accounting.BFF.Core;
 using CodeTest.Accounting.ServiceClients;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,6 +58,9 @@ namespace CodeTest.Accounting.BFF
 
                 return new TransactionsServiceClient(client);
             }));
+
+            services.AddSingleton<AccountsOrchestrator>();
+            services.AddSingleton<InformationOrchestrator>();
 
             services.AddHttpClient();
             services.AddControllersWithViews();
