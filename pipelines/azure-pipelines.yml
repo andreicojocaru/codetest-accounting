@@ -23,6 +23,13 @@ stages:
       # this can be a template, kept it like this for clarity
       # somehow, the WorkingDirectory is not correctly picked up by the DotNetCoreCLI@2 task, we use plain shell instead :(
       - task: CmdLine@2
+        displayName: "Run unit tests"
+        inputs:
+          script: 'dotnet test'
+          workingDirectory: '$(Build.SourcesDirectory)/src'
+          failOnStderr: true
+
+      - task: CmdLine@2
         displayName: "Publish service: Accounts"
         inputs:
           script: 'dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/CodeTest.Accounting.Accounts'
